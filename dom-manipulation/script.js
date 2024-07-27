@@ -26,7 +26,7 @@ function saveQuotes() {
 }
 
 // Populate category filter dropdown
-function populateCategories() {
+function populateCategoryFilter() {
   const categories = Array.from(new Set(quotes.map((quote) => quote.category)));
   const categoryFilter = document.getElementById("categoryFilter");
 
@@ -49,7 +49,7 @@ function populateCategories() {
 }
 
 // Filter quotes based on selected category
-function filterQuote() {
+function filterQuotes() {
   const selectedCategory = document.getElementById("categoryFilter").value;
   localStorage.setItem("selectedCategory", selectedCategory);
 
@@ -62,6 +62,14 @@ function filterQuote() {
   quoteDisplay.innerHTML = filteredQuotes
     .map((quote) => `<p>${quote.text} - <i>${quote.category}</i></p>`)
     .join("");
+}
+
+// Show a random quote
+function showRandomQuote() {
+  const randomIndex = Math.floor(Math.random() * quotes.length);
+  const randomQuote = quotes[randomIndex];
+  document.getElementById("quoteDisplay").innerText = randomQuote.text;
+  sessionStorage.setItem("lastViewedQuote", JSON.stringify(randomQuote));
 }
 
 // Add a new quote
