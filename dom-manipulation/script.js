@@ -26,7 +26,7 @@ function saveQuotes() {
 }
 
 // Populate category filter dropdown
-function populateCategoryFilter() {
+function CategoryFilter() {
   const categories = Array.from(new Set(quotes.map((quote) => quote.category)));
   const categoryFilter = document.getElementById("categoryFilter");
 
