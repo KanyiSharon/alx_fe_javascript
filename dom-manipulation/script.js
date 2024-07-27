@@ -49,7 +49,7 @@ function populateCategories() {
 }
 
 // Filter quotes based on selected category
-function filterQuotes() {
+function filterQuote() {
   const selectedCategory = document.getElementById("categoryFilter").value;
   localStorage.setItem("selectedCategory", selectedCategory);
 
