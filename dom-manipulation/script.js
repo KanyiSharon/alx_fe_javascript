@@ -5,7 +5,10 @@ let quotes = [
     text: "A room without books is like a body without a soul.",
     category: "Philosophy",
   },
-
+  {
+    text: "You know you’re in love when you can’t fall asleep because reality is finally better than your dreams.",
+    category: "Love",
+  },
   { text: "I think therefore I am", category: "Philosophy" },
 ];
 

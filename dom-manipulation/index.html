@@ -4,14 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dynamic Quote Generator</title>
-    
   </head>
   <body>
     <h1>Dynamic Quote Generator</h1>
-        <h5><i>Click button bellow to see a random quote:</i></h5>
-
+    <h5><i>Click button below to see a random quote:</i></h5>
     <div id="quoteDisplay"></div>
     <button onclick="showRandomQuote()" id="newQuote">Show New Quote</button>
+    <button onclick="exportToJsonFile()">Export Quotes</button>
+    <h5><i>Add a new quote:</i></h5>
+    <div id="quoteForm"></div>
+    <h5><i>Import Quotes:</i></h5>
+    <input
+      type="file"
+      id="importFile"
+      accept=".json"
+      onchange="importFromJsonFile(event)"
+    />
     <script src="script.js"></script>
   </body>
 </html>
