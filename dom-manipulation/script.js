@@ -1,3 +1,4 @@
+// Initial quotes array
 let quotes = [
   { text: "So many books, so little time.", category: "Humor" },
   {
@@ -63,14 +64,6 @@ function filterQuotes() {
     .join("");
 }
 
-// Show a random quote
-function showRandomQuote() {
-  const randomIndex = Math.floor(Math.random() * quotes.length);
-  const randomQuote = quotes[randomIndex];
-  document.getElementById("quoteDisplay").innerText = randomQuote.text;
-  sessionStorage.setItem("lastViewedQuote", JSON.stringify(randomQuote));
-}
-
 // Add a new quote
 function addQuote() {
   const newQuoteText = document.getElementById("newQuoteText").value;
@@ -78,8 +71,8 @@ function addQuote() {
   if (newQuoteText && newQuoteCategory) {
     quotes.push({ text: newQuoteText, category: newQuoteCategory });
     saveQuotes();
-    showRandomQuote();
     populateCategoryFilter();
+    showRandomQuote();
     document.getElementById("newQuoteText").value = ""; // Clear the input field
     document.getElementById("newQuoteCategory").value = ""; // Clear the input field
   } else {
