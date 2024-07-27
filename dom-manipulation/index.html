@@ -10,10 +10,17 @@
     <h5><i>Click button below to see a random quote:</i></h5>
     <div id="quoteDisplay"></div>
     <button onclick="showRandomQuote()" id="newQuote">Show New Quote</button>
-    <button onclick="exportToJsonFile()">Export Quotes</button>
+
+    <h5><i>Filter by Category:</i></h5>
+    <select id="categoryFilter" onchange="filterQuotes()">
+      <option value="all">All Categories</option>
+      <!-- Dynamically populated categories -->
+    </select>
+
     <h5><i>Add a new quote:</i></h5>
     <div id="quoteForm"></div>
-    <h5><i>Import Quotes:</i></h5>
+    <h5><i>Import and Export Quotes:</i></h5>
+    <button onclick="exportToJsonFile()">Export Quotes</button>
     <input
       type="file"
       id="importFile"
