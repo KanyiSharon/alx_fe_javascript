@@ -13,6 +13,17 @@ let quotes = [
     category: "Philosophy",
   },
 ];
+//load quotes from local storage
+function loadQuotes(){
+  const storedQuotes=localStorage.getItem('quotes');
+  if(storedQuotes){
+    quotes=JSON.parse(storedQuotes);
+  }
+}
+//save quotes tolocal storage
+function saveQuotes(){
+localStorage.setItem('quotes',JSON.stringify(quotes));
+}
 //show random Quote fun
 function showRandomQuote() {
   //math.floor-rounds down
@@ -33,4 +44,14 @@ function createAddQuoteForm() {
 
     </div>`;
   document.getElementById("quoteForm").innerHTML = form;
+}
+
+function saveQuotes(){
+localStorage.setItem("quotes","JSON.stringify(quotes))");
+}
+function loadQuotes(){
+    const storedQuotes=localStorage.getItem('quotes');
+    if(storedQuotes){
+        quotes=JSON.parse(storedQuotes);
+    }
 }
