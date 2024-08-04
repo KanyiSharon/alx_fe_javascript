@@ -1,3 +1,5 @@
+const serverUrl = "https://jsonplaceholder.typicode.com/posts"; // Replace with your mock API URL
+
 // Initial quotes array
 let quotes = [
   { text: "So many books, so little time.", category: "Humor" },
@@ -12,17 +14,88 @@ let quotes = [
   { text: "I think therefore I am", category: "Philosophy" },
 ];
 
-// Load quotes from local storage
-function loadQuotes() {
-  const storedQuotes = localStorage.getItem("quotes");
-  if (storedQuotes) {
-    quotes = JSON.parse(storedQuotes);
+// Load quotes from server and local storage
+async function loadQuotes() {
+  try {
+    const response = await fetch(serverUrl);
+    const serverQuotes = await response.json();
+    localStorage.setItem("serverQuotes", JSON.stringify(serverQuotes));
+    quotes = JSON.parse(localStorage.getItem("quotes")) || serverQuotes;
+    populateCategories();
+    filterQuotes();
+  } catch (error) {
+    console.error("Error fetching quotes from server:", error);
+    quotes = JSON.parse(localStorage.getItem("quotes")) || [];
   }
 }
 
 // Save quotes to local storage
 function saveQuotes() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
+}
+
+// Post new quotes to the server
+async function postQuote(quote) {
+  try {
+    const response = await fetch(serverUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(quote),
+    });
+    const serverQuote = await response.json();
+    return serverQuote;
+  } catch (error) {
+    console.error("Error posting quote to server:", error);
+  }
+}
+
+// Periodically fetch new quotes from the server
+async function syncQuotes() {
+  try {
+    const response = await fetch(serverUrl);
+    const serverQuotes = await response.json();
+    const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+    const mergedQuotes = resolveConflicts(localQuotes, serverQuotes);
+    quotes = mergedQuotes;
+    saveQuotes();
+    populateCategories();
+    filterQuotes();
+    notifyUser("Quotes synced with server");
+  } catch (error) {
+    console.error("Error syncing quotes with server:", error);
+  }
+}
+
+// Resolve conflicts by giving precedence to server data
+function resolveConflicts(localQuotes, serverQuotes) {
+  const serverQuotesMap = new Map(
+    serverQuotes.map((quote) => [quote.id, quote])
+  );
+  const mergedQuotes = localQuotes.map(
+    (quote) => serverQuotesMap.get(quote.id) || quote
+  );
+  return mergedQuotes.concat(
+    serverQuotes.filter((quote) => !serverQuotesMap.has(quote.id))
+  );
+}
+
+// Notify users about updates
+function notifyUser(message) {
+  const notification = document.createElement("div");
+  notification.className = "notification";
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  setTimeout(() => notification.remove(), 5000);
+}
+
+// Example of manually resolving conflicts (simple implementation)
+function manuallyResolveConflicts(localQuotes, serverQuotes) {
+  // Example implementation: user decides which quote to keep
+  const resolvedQuotes = [];
+  // Add your manual conflict resolution logic here
+  return resolvedQuotes;
 }
 
 // Populate category filter dropdown
@@ -73,11 +146,15 @@ function showRandomQuote() {
 }
 
 // Add a new quote
-function addQuote() {
+async function addQuote() {
   const newQuoteText = document.getElementById("newQuoteText").value;
   const newQuoteCategory = document.getElementById("newQuoteCategory").value;
   if (newQuoteText && newQuoteCategory) {
-    quotes.push({ text: newQuoteText, category: newQuoteCategory });
+    const newQuote = { text: newQuoteText, category: newQuoteCategory };
+    quotes.push(newQuote);
+    saveQuotes();
+    const serverQuote = await postQuote(newQuote);
+    quotes = quotes.map((quote) => (quote === newQuote ? serverQuote : quote));
     saveQuotes();
     populateCategories(); // Reapply filter to include the new quote
     filterQuotes(); // Reapply filter to include the new quote
@@ -143,6 +220,7 @@ function initialize() {
   createAddQuoteForm();
   populateCategories();
   loadLastViewedQuote();
+  setInterval(syncQuotes, 60000); // Sync quotes every 60 seconds
 }
 
 document.addEventListener("DOMContentLoaded", initialize);
