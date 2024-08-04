@@ -66,7 +66,7 @@ async function syncQuotes() {
   saveQuotes();
   populateCategories();
   filterQuotes();
-  notifyUser("Quotes synced with server");
+  notifyUser("Quotes synced with server!");
 }
 
 // Resolve conflicts by giving precedence to server data
