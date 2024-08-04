@@ -14,19 +14,25 @@ let quotes = [
   { text: "I think therefore I am", category: "Philosophy" },
 ];
 
-// Load quotes from server and local storage
-async function loadQuotes() {
+// Fetch quotes from the server
+async function fetchQuotesFromServer() {
   try {
     const response = await fetch(serverUrl);
     const serverQuotes = await response.json();
-    localStorage.setItem("serverQuotes", JSON.stringify(serverQuotes));
-    quotes = JSON.parse(localStorage.getItem("quotes")) || serverQuotes;
-    populateCategories();
-    filterQuotes();
+    return serverQuotes;
   } catch (error) {
     console.error("Error fetching quotes from server:", error);
-    quotes = JSON.parse(localStorage.getItem("quotes")) || [];
+    return [];
   }
+}
+
+// Load quotes from server and local storage
+async function loadQuotes() {
+  const serverQuotes = await fetchQuotesFromServer();
+  localStorage.setItem("serverQuotes", JSON.stringify(serverQuotes));
+  quotes = JSON.parse(localStorage.getItem("quotes")) || serverQuotes;
+  populateCategories();
+  filterQuotes();
 }
 
 // Save quotes to local storage
@@ -53,19 +59,14 @@ async function postQuote(quote) {
 
 // Periodically fetch new quotes from the server
 async function syncQuotes() {
-  try {
-    const response = await fetch(serverUrl);
-    const serverQuotes = await response.json();
-    const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
-    const mergedQuotes = resolveConflicts(localQuotes, serverQuotes);
-    quotes = mergedQuotes;
-    saveQuotes();
-    populateCategories();
-    filterQuotes();
-    notifyUser("Quotes synced with server");
-  } catch (error) {
-    console.error("Error syncing quotes with server:", error);
-  }
+  const serverQuotes = await fetchQuotesFromServer();
+  const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+  const mergedQuotes = resolveConflicts(localQuotes, serverQuotes);
+  quotes = mergedQuotes;
+  saveQuotes();
+  populateCategories();
+  filterQuotes();
+  notifyUser("Quotes synced with server");
 }
 
 // Resolve conflicts by giving precedence to server data
