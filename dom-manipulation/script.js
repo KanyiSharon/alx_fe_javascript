@@ -44,7 +44,7 @@ function populateCategoryFilter() {
   const lastSelectedCategory = localStorage.getItem("selectedCategory");
   if (lastSelectedCategory) {
     categoryFilter.value = lastSelectedCategory;
-    filterQuotes();
+    filterQuotes(); // Call filterQuotes to apply the last selected category
   }
 }
 
@@ -80,7 +80,7 @@ function addQuote() {
     quotes.push({ text: newQuoteText, category: newQuoteCategory });
     saveQuotes();
     populateCategoryFilter();
-    filterQuotes();
+    filterQuotes(); // Reapply filter to include the new quote
     showRandomQuote();
     document.getElementById("newQuoteText").value = ""; // Clear the input field
     document.getElementById("newQuoteCategory").value = ""; // Clear the input field
